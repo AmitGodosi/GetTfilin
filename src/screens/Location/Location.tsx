@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
-import { Alert, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, StyleSheet, Text, View } from 'react-native'
 import { PermissionStatus, getCurrentPositionAsync, useForegroundPermissions } from 'expo-location'
 import { convertLocationToAddress, getMapPreview } from './utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocation } from '@/services/store/components/location';
 import { ApplicationState } from '@/services/store/models';
-import CustomPressable from '@/common/Pressable';
 import { LocationProps } from './models';
+import CustomPressable from '@/common/CustomPressable';
+import { BACKGROUND_COLORS } from '@/services/sass/colors';
 
 const Location = ({ navigation }: LocationProps) => {
 	const [locationPermissionInformation, requestPermission] = useForegroundPermissions()
@@ -47,7 +48,7 @@ const Location = ({ navigation }: LocationProps) => {
 	}
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<View style={styles.imageContainer}>
 				{coordinate?.lat && coordinate?.lng ? (
 					<Image
@@ -59,12 +60,12 @@ const Location = ({ navigation }: LocationProps) => {
 				) : (
 					<Text style={{ textAlign: 'center', flex: 1 }}>No location picked yet.</Text>
 				)}
-				<Text>{address}</Text>
+				<Text style={{fontSize: 24, color: '#fff'}}>{address}</Text>
 			</View>
 			<View style={{ flex: 4, gap: 20 }}>
 				<CustomPressable onPressHandler={() => { }} pressableStyle={styles.pressable} text='שלח מיקום' textStyle={styles.pressableText} />
 			</View>
-		</SafeAreaView>
+		</View>
 	)
 }
 
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		gap: 50,
-		marginTop: 20
+		backgroundColor: BACKGROUND_COLORS.default
 	},
 	imageContainer: {
 		flex: 6,
@@ -89,8 +90,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		height: '100%',
-		borderRadius: 5,
-		objectFit: 'contain',
+		resizeMode: 'contain',
+		borderRadius: 10,
+		overflow: 'hidden'
 	},
 	pressable: {
 		marginHorizontal: 10,

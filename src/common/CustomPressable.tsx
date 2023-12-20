@@ -2,9 +2,9 @@ import { Pressable, Text } from "react-native"
 
 type Props = {
 	pressableStyle: any;
-	textStyle: any;
-	onPressHandler: () => void;
 	text: string;
+	textStyle?: any;
+	onPressHandler?: () => void;
 }
 const CustomPressable = ({ onPressHandler, text, pressableStyle, textStyle }: Props) => {
 	return (
