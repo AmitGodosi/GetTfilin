@@ -1,3 +1,4 @@
+import { Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 type Props = {
@@ -6,18 +7,19 @@ type Props = {
 	onPress: (event: any) => void;
 }
 const MapViewer = ({ markerLocation, pickedLocation, onPress }: Props) => {
-	const {lat: latitude,lng: longitude} = pickedLocation || {}
+	const { lat: latitude, lng: longitude } = pickedLocation || {}
 	const region = {
 		latitude,
-		longitude,
 		latitudeDelta: 0.0922,
+		longitude,
 		longitudeDelta: 0.0421,
 	}
 
 	return (
-		<MapView style={{ flex: 1 }} initialRegion={region} onPress={onPress}>
-			<Marker title='Picked Location' coordinate={{ latitude: markerLocation.lat, longitude: markerLocation.lng }} />
-		</MapView>
+		//<MapView style={{ flex: 1 }} initialRegion={region} onPress={onPress}>
+		//	<Marker title='Picked Location' coordinate={{ latitude: markerLocation?.lat, longitude: markerLocation?.lng }} />
+		//</MapView>
+		<Text>Need to fix Map View</Text>
 	)
 }
 

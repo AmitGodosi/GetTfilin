@@ -46,11 +46,6 @@ const Location = () => {
 		});
 	}
 
-
-	const pickOnMapHandler = () => {
-
-	}
-
 	let locationPreview = <Text>No location picked yet.</Text>;
 
 	if (pickedLocation) {
@@ -66,7 +61,6 @@ const Location = () => {
 
 	const selectMapLocationHandler = (event: any) => {
 		const { latitude, longitude } = event?.nativeEvent?.coordinate || {}
-		console.log('here', latitude, longitude)
 		setMarkerLocation({ lat: latitude, lng: longitude })
 	}
 
