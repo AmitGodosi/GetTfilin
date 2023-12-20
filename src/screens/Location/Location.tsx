@@ -23,7 +23,6 @@ const Location = ({ navigation }: LocationProps) => {
 		if (!hasPermission) {
 			return;
 		}
-		console.log('getCurrentLocation')
 		const location = await getCurrentPositionAsync();
 		const { latitude: lat, longitude: lng } = location?.coords || {}
 		const address = await convertLocationToAddress(lat, lng)
