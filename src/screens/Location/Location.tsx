@@ -1,22 +1,20 @@
 import { useEffect } from 'react';
-import { Alert, Image, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { PermissionStatus, getCurrentPositionAsync, useForegroundPermissions } from 'expo-location'
 import { convertLocationToAddress, getMapPreview } from './utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocation } from '@/services/store/components/location';
 import { ApplicationState } from '@/services/store/models';
 import CustomPressable from '@/common/Pressable';
+import { LocationProps } from './models';
 
-const Location = () => {
+const Location = ({ navigation }: LocationProps) => {
 	const [locationPermissionInformation, requestPermission] = useForegroundPermissions()
 	const { coordinate, address } = useSelector((state: ApplicationState) => state?.locationStore)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		const getLocation = async () => {
-			await getCurrentLocation()
-		}
-		getLocation()
+		getCurrentLocation()
 	}, [])
 
 	const getCurrentLocation = async () => {
@@ -49,7 +47,7 @@ const Location = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<View style={styles.imageContainer}>
 				{coordinate?.lat && coordinate?.lng ? (
 					<Image
@@ -66,7 +64,7 @@ const Location = () => {
 			<View style={{ flex: 4, gap: 20 }}>
 				<CustomPressable onPressHandler={() => { }} pressableStyle={styles.pressable} text='שלח מיקום' textStyle={styles.pressableText} />
 			</View>
-		</View>
+		</SafeAreaView>
 	)
 }
 

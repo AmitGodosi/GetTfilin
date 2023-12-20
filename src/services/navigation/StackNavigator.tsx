@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Home from '@/screens/Home/Home';
 import Location from '@/screens/Location/Location';
 import LocationHeaderRight from '@/screens/Location/components/HeaderRight';
-import MapViewer from '@/screens/Location/components/MapViewer';
+import MapViewer from '@/screens/Home/MapViewer/MapViewer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

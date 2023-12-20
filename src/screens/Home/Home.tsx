@@ -1,13 +1,19 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, SafeAreaView } from 'react-native'
 import { RoutesNames } from '@/services/navigation/models'
+import { HomeProps } from './models'
+import { useLayoutEffect } from 'react'
 
-const Home = ({ navigation }: any) => {
+const Home = ({ navigation }: HomeProps) => {
+	useLayoutEffect(() => {
+		navigation.setOptions({ headerShown: false })
+	}, [])
+	
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<Pressable style={styles.pressable} onPress={() => navigation.navigate(RoutesNames.LOCATION_ROUTE)}>
 				<Text style={{ color: '#f9f4f4' }}>אני רוצה להניח!</Text>
 			</Pressable>
-		</View>
+		</SafeAreaView>
 	)
 }
 

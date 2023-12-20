@@ -1,9 +1,9 @@
 import { ApplicationState } from "@/services/store/models";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { MapViewProps, Marker } from "react-native-maps";
 
-const MapViewer = () => {
+const MapViewer = ({ }: MapViewProps) => {
 	const { coordinate } = useSelector((state: ApplicationState) => state?.locationStore)
 	const [markerCoordinate, setMarkerCoordinate] = useState<{ lat: number, lng: number }>({ lat: coordinate.lat, lng: coordinate.lng });
 
