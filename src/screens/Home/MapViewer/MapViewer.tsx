@@ -1,11 +1,11 @@
 import { ApplicationState } from "@/services/store/models";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCoordinate } from "@/services/store/components/location";
 import MapView, { MapViewProps, Marker } from "react-native-maps";
 
 const MapViewer = ({ }: MapViewProps) => {
 	const { coordinate } = useSelector((state: ApplicationState) => state?.locationStore)
-	const [markerCoordinate, setMarkerCoordinate] = useState<{ lat: number, lng: number }>({ lat: coordinate.lat, lng: coordinate.lng });
+	const dispatch = useDispatch()
 
 	const region = {
 		latitude: coordinate?.lat,
@@ -16,13 +16,13 @@ const MapViewer = ({ }: MapViewProps) => {
 
 	const selectMapLocationHandler = (event: any) => {
 		const { latitude: lat, longitude: lng } = event?.nativeEvent?.coordinate || {}
-		setMarkerCoordinate({ lat, lng })
+		dispatch(setCoordinate({ lat, lng }))
 	}
 
 	return (
 		<MapView style={{ flex: 1 }} initialRegion={region} onPress={selectMapLocationHandler}>
-			{!!markerCoordinate?.lat && !!markerCoordinate?.lng && (
-				<Marker title='Picked Location' coordinate={{ latitude: markerCoordinate.lat, longitude: markerCoordinate.lng }} />
+			{!!coordinate?.lat && !!coordinate?.lng && (
+				<Marker title='Picked Location' coordinate={{ latitude: coordinate.lat, longitude: coordinate.lng }} />
 			)}
 		</MapView>
 	)

@@ -6,17 +6,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLocation } from '@/services/store/components/location';
 import { ApplicationState } from '@/services/store/models';
 import { LocationProps } from './models';
+import { BACKGROUND_COLORS, PRESSABLE_COLORS } from '@/services/sass/colors';
 import CustomPressable from '@/common/CustomPressable';
-import { BACKGROUND_COLORS } from '@/services/sass/colors';
 
 const Location = ({ navigation }: LocationProps) => {
 	const [locationPermissionInformation, requestPermission] = useForegroundPermissions()
-	const { coordinate, address } = useSelector((state: ApplicationState) => state?.locationStore)
+	const { coordinate: { lat, lng }, address } = useSelector((state: ApplicationState) => state?.locationStore)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
 		getCurrentLocation()
 	}, [])
+
+	useEffect(() => {
+		getAddressFromCoordinate(lat, lng)
+	}, [lat, lng])
 
 	const getCurrentLocation = async () => {
 		const hasPermission = await verifyPermissions();
@@ -25,6 +29,10 @@ const Location = ({ navigation }: LocationProps) => {
 		}
 		const location = await getCurrentPositionAsync();
 		const { latitude: lat, longitude: lng } = location?.coords || {}
+		getAddressFromCoordinate(lat, lng)
+	}
+
+	const getAddressFromCoordinate = async (lat: number, lng: number) => {
 		const address = await convertLocationToAddress(lat, lng)
 		dispatch(setLocation({ address, lat, lng }))
 	}
@@ -49,17 +57,17 @@ const Location = ({ navigation }: LocationProps) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.imageContainer}>
-				{coordinate?.lat && coordinate?.lng ? (
+				{lat && lng ? (
 					<Image
 						style={styles.image}
 						source={{
-							uri: getMapPreview(coordinate?.lat, coordinate?.lng)
+							uri: getMapPreview(lat, lng)
 						}}
 					/>
 				) : (
 					<Text style={{ textAlign: 'center', flex: 1 }}>No location picked yet.</Text>
 				)}
-				<Text style={{fontSize: 24, color: '#fff'}}>{address}</Text>
+				<Text style={{ fontSize: 24, color: PRESSABLE_COLORS.white, textAlign: 'center' }}>{address}</Text>
 			</View>
 			<View style={{ flex: 4, gap: 20 }}>
 				<CustomPressable onPressHandler={() => { }} pressableStyle={styles.pressable} text='שלח מיקום' textStyle={styles.pressableText} />
@@ -83,7 +91,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		flexDirection: 'column',
-		width: '90%',
+		width: '90%'
 	},
 	image: {
 		flex: 1,
@@ -94,12 +102,12 @@ const styles = StyleSheet.create({
 		overflow: 'hidden'
 	},
 	pressable: {
-		marginHorizontal: 10,
-		backgroundColor: '#72a4ac',
+		backgroundColor: PRESSABLE_COLORS.white,
 		padding: 10,
 		borderRadius: 5,
 	},
 	pressableText: {
-		color: '#f9f4f4'
+		color: PRESSABLE_COLORS.blue,
+		fontSize: 18
 	}
 });
