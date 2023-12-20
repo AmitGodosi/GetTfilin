@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { RoutesNames } from '../../services/navigation/models'
+import { RoutesNames } from '@/services/navigation/models'
 
 const Home = ({ navigation }: any) => {
 	return (

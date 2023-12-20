@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Alert, Button, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, StyleSheet, Text, View } from 'react-native'
 import { PermissionStatus, getCurrentPositionAsync, useForegroundPermissions } from 'expo-location'
 import { getMapPreview } from './utils';
 import MapViewer from './components/MapViewer';
-import CustomPressable from '../../common/Pressable';
+import CustomPressable from '@/common/Pressable';
 
 const Location = () => {
 	const [pickedLocation, setPickedLocation] = useState<{ lat: number, lng: number }>();

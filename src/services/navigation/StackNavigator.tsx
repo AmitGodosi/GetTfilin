@@ -1,10 +1,10 @@
 import { RootStackParamList, RoutesNames, ScreensNames } from './models';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from '../../screens/Home/Home';
-import Location from '../../screens/Location/Location';
 import { StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import LocationHeaderRight from '../../screens/Location/components/HeaderRight';
+import Home from '@/screens/Home/Home';
+import Location from '@/screens/Location/Location';
+import LocationHeaderRight from '@/screens/Location/components/HeaderRight';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
