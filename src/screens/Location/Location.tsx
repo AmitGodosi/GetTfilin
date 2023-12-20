@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native'
+import { Alert, Button, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { PermissionStatus, getCurrentPositionAsync, useForegroundPermissions } from 'expo-location'
 import { getMapPreview } from './utils';
 import MapViewer from './components/MapViewer';
+import CustomPressable from '../../common/Pressable';
 
 const Location = () => {
 	const [pickedLocation, setPickedLocation] = useState<{ lat: number, lng: number }>();
@@ -65,14 +66,14 @@ const Location = () => {
 	}
 
 	return (
-		<View style={{ width: '75%', height: '50%', justifyContent: 'space-between', alignItems: 'center' }}>
+		<View style={styles.container}>
 			<Text style={{ flex: 1 }}>כתובת: {pickedLocation?.lat} {pickedLocation?.lng}</Text>
 			<View style={{ width: '100%', height: '25%', flex: 3 }}>
 				{locationPreview}
 			</View>
 			<View style={styles.actions}>
-				<Button title='מפה' onPress={() => setIsMap(true)} />
-				<Button title='מיקום נוכחי' onPress={getCurrentLocation} />
+				<CustomPressable onPressHandler={() => setIsMap(true)} pressableStyle={styles.pressable} text='מפה' textStyle={styles.pressableText} />
+				<CustomPressable onPressHandler={getCurrentLocation} pressableStyle={styles.pressable} text='מיקום נוכחי' textStyle={styles.pressableText} />
 			</View>
 			<View style={{ flex: 3, width: '100%' }}>
 				{isMap && pickedLocation && markerLocation && (
@@ -87,6 +88,13 @@ export default Location
 
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		width: '75%',
+		height: '50%',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
 	mapPreview: {
 		width: '100%',
 		height: 200,
@@ -99,7 +107,16 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',
-		flex: 1
+		flex: 1,
+	},
+	pressable: {
+		marginHorizontal: 10,
+		backgroundColor: '#72a4ac',
+		padding: 10,
+		borderRadius: 5,
+	},
+	pressableText: {
+		color: '#f9f4f4'
 	},
 	image: {
 		width: '100%',
