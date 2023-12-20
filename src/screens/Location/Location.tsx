@@ -47,29 +47,25 @@ const Location = () => {
 		});
 	}
 
-	let locationPreview = <Text>No location picked yet.</Text>;
-
-	if (pickedLocation) {
-		locationPreview = (
-			<Image
-				style={styles.image}
-				source={{
-					uri: getMapPreview(pickedLocation.lat, pickedLocation.lng),
-				}}
-			/>
-		);
-	}
-
 	const selectMapLocationHandler = (event: any) => {
-		const { latitude, longitude } = event?.nativeEvent?.coordinate || {}
-		setMarkerLocation({ lat: latitude, lng: longitude })
+		const { latitude: lat, longitude: lng } = event?.nativeEvent?.coordinate || {}
+		setMarkerLocation({ lat, lng })
 	}
 
 	return (
 		<View style={styles.container}>
 			<Text style={{ flex: 1 }}>כתובת: {pickedLocation?.lat} {pickedLocation?.lng}</Text>
 			<View style={{ width: '100%', height: '25%', flex: 3 }}>
-				{locationPreview}
+				{pickedLocation ? (
+					<Image
+						style={styles.image}
+						source={{
+							uri: getMapPreview(pickedLocation.lat, pickedLocation.lng),
+						}}
+					/>
+				) : (
+					<Text style={{ textAlign: 'center' }}>No location picked yet.</Text>
+				)}
 			</View>
 			<View style={styles.actions}>
 				<CustomPressable onPressHandler={() => setIsMap(true)} pressableStyle={styles.pressable} text='מפה' textStyle={styles.pressableText} />
@@ -90,9 +86,6 @@ export default Location
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		width: '75%',
-		height: '50%',
-		justifyContent: 'space-between',
 		alignItems: 'center'
 	},
 	mapPreview: {
