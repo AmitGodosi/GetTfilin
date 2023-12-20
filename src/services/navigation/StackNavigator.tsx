@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Home from '@/screens/Home/Home';
 import Location from '@/screens/Location/Location';
 import LocationHeaderRight from '@/screens/Location/components/HeaderRight';
+import MapViewer from '@/screens/Location/components/MapViewer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -16,6 +17,7 @@ export default function StackNavigator() {
 				<Stack.Navigator>
 					<Stack.Screen name={RoutesNames.HOME_ROUTE} component={Home} options={{ title: ScreensNames.HOME }} />
 					<Stack.Screen name={RoutesNames.LOCATION_ROUTE} component={Location} options={{ title: ScreensNames.LOCATION, headerRight: () => <LocationHeaderRight /> }} />
+					<Stack.Screen name={RoutesNames.MAP_VIEW_ROUTE} component={MapViewer} options={{ title: ScreensNames.MAP_VIEW }} />
 				</Stack.Navigator>
 			</View>
 		</>

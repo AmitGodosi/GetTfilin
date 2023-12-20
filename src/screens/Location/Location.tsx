@@ -1,20 +1,39 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native'
 import { PermissionStatus, getCurrentPositionAsync, useForegroundPermissions } from 'expo-location'
-import { getMapPreview } from './utils';
-import MapViewer from './components/MapViewer';
+import { convertLocationToAddress, getMapPreview } from './utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLocation } from '@/services/store/components/location';
+import { ApplicationState } from '@/services/store/models';
 import CustomPressable from '@/common/Pressable';
 
 const Location = () => {
-	const [pickedLocation, setPickedLocation] = useState<{ lat: number, lng: number }>();
-	const [markerLocation, setMarkerLocation] = useState<{ lat: number, lng: number }>();
-	const [isMap, setIsMap] = useState(false)
 	const [locationPermissionInformation, requestPermission] = useForegroundPermissions()
+	const { coordinate, address } = useSelector((state: ApplicationState) => state?.locationStore)
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		const getLocation = async () => {
+			await getCurrentLocation()
+		}
+		getLocation()
+	}, [])
+
+	const getCurrentLocation = async () => {
+		const hasPermission = await verifyPermissions();
+		if (!hasPermission) {
+			return;
+		}
+		console.log('getCurrentLocation')
+		const location = await getCurrentPositionAsync();
+		const { latitude: lat, longitude: lng } = location?.coords || {}
+		const address = await convertLocationToAddress(lat, lng)
+		dispatch(setLocation({ address, lat, lng }))
+	}
 
 	const verifyPermissions = async () => {
 		if (locationPermissionInformation?.status === PermissionStatus.UNDETERMINED) {
 			const permissionResponse = await requestPermission();
-
 			return permissionResponse.granted;
 		}
 
@@ -29,52 +48,24 @@ const Location = () => {
 		return true;
 	}
 
-	const getCurrentLocation = async () => {
-		const hasPermission = await verifyPermissions();
-
-		if (!hasPermission) {
-			return;
-		}
-
-		const location = await getCurrentPositionAsync();
-		setPickedLocation({
-			lat: location.coords.latitude,
-			lng: location.coords.longitude,
-		});
-		setMarkerLocation({
-			lat: location.coords.latitude,
-			lng: location.coords.longitude,
-		});
-	}
-
-	const selectMapLocationHandler = (event: any) => {
-		const { latitude: lat, longitude: lng } = event?.nativeEvent?.coordinate || {}
-		setMarkerLocation({ lat, lng })
-	}
-
 	return (
 		<View style={styles.container}>
-			<Text style={{ flex: 1 }}>כתובת: {pickedLocation?.lat} {pickedLocation?.lng}</Text>
-			<View style={{ width: '100%', height: '25%', flex: 3 }}>
-				{pickedLocation ? (
+			<View style={styles.imageContainer}>
+				{coordinate?.lat && coordinate?.lng ? (
 					<Image
 						style={styles.image}
 						source={{
-							uri: getMapPreview(pickedLocation.lat, pickedLocation.lng),
+							//uri: 'https://maps.googleapis.com/maps/api/staticmap?center=31.665753831072834,34.553685478550236&zoom=16&size=600x300&maptype=roadmap&markers=color:green%7Clabel:S%7C31.665753831072834,34.553685478550236&key=AIzaSyClMghgMbGCt8dDZMoxql5fBG3cDssdPFY'
+							uri: getMapPreview(coordinate?.lat, coordinate?.lng)
 						}}
 					/>
 				) : (
-					<Text style={{ textAlign: 'center' }}>No location picked yet.</Text>
+					<Text style={{ textAlign: 'center', flex: 1 }}>No location picked yet.</Text>
 				)}
+				<Text>{address}</Text>
 			</View>
-			<View style={styles.actions}>
-				<CustomPressable onPressHandler={() => setIsMap(true)} pressableStyle={styles.pressable} text='מפה' textStyle={styles.pressableText} />
-				<CustomPressable onPressHandler={getCurrentLocation} pressableStyle={styles.pressable} text='מיקום נוכחי' textStyle={styles.pressableText} />
-			</View>
-			<View style={{ flex: 3, width: '100%' }}>
-				{isMap && pickedLocation && markerLocation && (
-					<MapViewer pickedLocation={pickedLocation} markerLocation={markerLocation} onPress={selectMapLocationHandler}></MapViewer>
-				)}
+			<View style={{ flex: 4, gap: 20 }}>
+				<CustomPressable onPressHandler={() => { }} pressableStyle={styles.pressable} text='שלח מיקום' textStyle={styles.pressableText} />
 			</View>
 		</View>
 	)
@@ -86,21 +77,23 @@ export default Location
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: 'center'
+		alignItems: 'center',
+		gap: 50,
+		marginTop: 20
 	},
-	mapPreview: {
-		width: '100%',
-		height: 200,
-		marginVertical: 8,
+	imageContainer: {
+		flex: 6,
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderRadius: 4,
+		flexDirection: 'column',
+		width: '90%',
 	},
-	actions: {
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		alignItems: 'center',
+	image: {
 		flex: 1,
+		width: '100%',
+		height: '100%',
+		borderRadius: 5,
+		objectFit: 'contain',
 	},
 	pressable: {
 		marginHorizontal: 10,
@@ -110,10 +103,5 @@ const styles = StyleSheet.create({
 	},
 	pressableText: {
 		color: '#f9f4f4'
-	},
-	image: {
-		width: '100%',
-		height: '100%',
-		borderRadius: 5
-	},
+	}
 });

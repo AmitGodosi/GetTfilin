@@ -1,25 +1,30 @@
-import { Text } from "react-native";
+import { ApplicationState } from "@/services/store/models";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
 
-type Props = {
-	pickedLocation: { lat: number, lng: number };
-	markerLocation: { lat: number, lng: number }
-	onPress: (event: any) => void;
-}
-const MapViewer = ({ markerLocation, pickedLocation, onPress }: Props) => {
-	const { lat: latitude, lng: longitude } = pickedLocation || {}
+const MapViewer = () => {
+	const { coordinate } = useSelector((state: ApplicationState) => state?.locationStore)
+	const [markerCoordinate, setMarkerCoordinate] = useState<{ lat: number, lng: number }>({ lat: coordinate.lat, lng: coordinate.lng });
+
 	const region = {
-		latitude,
+		latitude: coordinate?.lat,
 		latitudeDelta: 0.0922,
-		longitude,
+		longitude: coordinate?.lng,
 		longitudeDelta: 0.0421,
 	}
 
+	const selectMapLocationHandler = (event: any) => {
+		const { latitude: lat, longitude: lng } = event?.nativeEvent?.coordinate || {}
+		setMarkerCoordinate({ lat, lng })
+	}
+
 	return (
-		//<MapView style={{ flex: 1 }} initialRegion={region} onPress={onPress}>
-		//	<Marker title='Picked Location' coordinate={{ latitude: markerLocation?.lat, longitude: markerLocation?.lng }} />
-		//</MapView>
-		<Text>Need to fix Map View</Text>
+		<MapView style={{ flex: 1 }} initialRegion={region} onPress={selectMapLocationHandler}>
+			{!!markerCoordinate?.lat && !!markerCoordinate?.lng && (
+				<Marker title='Picked Location' coordinate={{ latitude: markerCoordinate.lat, longitude: markerCoordinate.lng }} />
+			)}
+		</MapView>
 	)
 }
 
