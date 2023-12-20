@@ -55,7 +55,6 @@ const Location = () => {
 					<Image
 						style={styles.image}
 						source={{
-							//uri: 'https://maps.googleapis.com/maps/api/staticmap?center=31.665753831072834,34.553685478550236&zoom=16&size=600x300&maptype=roadmap&markers=color:green%7Clabel:S%7C31.665753831072834,34.553685478550236&key=AIzaSyClMghgMbGCt8dDZMoxql5fBG3cDssdPFY'
 							uri: getMapPreview(coordinate?.lat, coordinate?.lng)
 						}}
 					/>
