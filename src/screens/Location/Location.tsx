@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native'
-import { PermissionStatus, getCurrentPositionAsync, useForegroundPermissions } from 'expo-location'
+import { PermissionStatus, getCurrentPositionAsync, requestForegroundPermissionsAsync } from 'expo-location'
 import { convertLocationToAddress, getMapPreview } from './utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocation } from '@/services/store/components/location';
@@ -10,7 +10,6 @@ import { BACKGROUND_COLORS, PRESSABLE_COLORS } from '@/services/sass/colors';
 import CustomPressable from '@/common/CustomPressable';
 
 const Location = ({ navigation }: LocationProps) => {
-	const [locationPermissionInformation, requestPermission] = useForegroundPermissions()
 	const { coordinate: { lat, lng }, address } = useSelector((state: ApplicationState) => state?.locationStore)
 	const dispatch = useDispatch()
 
@@ -19,7 +18,9 @@ const Location = ({ navigation }: LocationProps) => {
 	}, [])
 
 	useEffect(() => {
-		getAddressFromCoordinate(lat, lng)
+		if (lat && lng) {
+			getAddressFromCoordinate(lat, lng)
+		}
 	}, [lat, lng])
 
 	const getCurrentLocation = async () => {
@@ -38,20 +39,19 @@ const Location = ({ navigation }: LocationProps) => {
 	}
 
 	const verifyPermissions = async () => {
-		if (locationPermissionInformation?.status === PermissionStatus.UNDETERMINED) {
-			const permissionResponse = await requestPermission();
-			return permissionResponse.granted;
+		try {
+			const { status } = await requestForegroundPermissionsAsync();
+			if (status === PermissionStatus.DENIED) {
+				Alert.alert(
+					'Insufficient Permissions!',
+					'You need to grant location permissions to use this app.'
+				);
+				return false;
+			}
+			return true;
+		} catch (error) {
+			console.error('Error requesting location permissions', error);
 		}
-
-		if (locationPermissionInformation?.status === PermissionStatus.DENIED) {
-			Alert.alert(
-				'Insufficient Permissions!',
-				'You need to grant location permissions to use this app.'
-			);
-			return false;
-		}
-
-		return true;
 	}
 
 	return (
