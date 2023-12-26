@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native'
 import { PermissionStatus, getCurrentPositionAsync, requestForegroundPermissionsAsync } from 'expo-location'
 import { convertLocationToAddress, getMapPreview } from './utils';
@@ -8,8 +8,10 @@ import { ApplicationState } from '@/services/store/models';
 import { LocationProps } from './models';
 import { BACKGROUND_COLORS, PRESSABLE_COLORS } from '@/services/sass/colors';
 import CustomPressable from '@/common/CustomPressable';
+import FormModal from './components/FormModal';
 
-const Location = ({ navigation }: LocationProps) => {
+const Location = ({ }: LocationProps) => {
+	const [isModalOpen, setIsModalOpen] = useState(false)
 	const { coordinate: { lat, lng }, address } = useSelector((state: ApplicationState) => state?.locationStore)
 	const dispatch = useDispatch()
 
@@ -49,8 +51,8 @@ const Location = ({ navigation }: LocationProps) => {
 				return false;
 			}
 			return true;
-		} catch (error) {
-			console.error('Error requesting location permissions', error);
+		} catch (e) {
+			throw new Error('Error requesting location permissions')
 		}
 	}
 
@@ -70,8 +72,16 @@ const Location = ({ navigation }: LocationProps) => {
 				<Text style={{ fontSize: 24, color: PRESSABLE_COLORS.white, textAlign: 'center' }}>{address}</Text>
 			</View>
 			<View style={{ flex: 4, gap: 20 }}>
-				<CustomPressable onPressHandler={() => { }} pressableStyle={styles.pressable} text='שלח מיקום' textStyle={styles.pressableText} />
+				<CustomPressable
+					onPressHandler={() => setIsModalOpen(true)}
+					pressableStyle={styles.pressable}
+					text='שלח מיקום'
+					textStyle={styles.pressableText}
+				/>
 			</View>
+			{isModalOpen && (
+				<FormModal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+			)}
 		</View>
 	)
 }

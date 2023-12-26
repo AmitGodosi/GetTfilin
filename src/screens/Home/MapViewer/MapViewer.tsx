@@ -28,4 +28,4 @@ const MapViewer = ({ }: MapViewProps) => {
 	)
 }
 
-export default MapViewer
+export default MapViewer 

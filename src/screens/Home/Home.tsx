@@ -15,7 +15,7 @@ const Home = ({ navigation }: HomeProps) => {
 		<SafeAreaView style={styles.container}>
 			<View style={styles.titleSection}>
 				<Text style={styles.title}>עדיין לא הנחת תפילין היום?</Text>
-				<Text style={styles.subtitle}>הכנס את מיקומך הנוכחי ונגיע עד אליך!</Text>
+				<Text style={styles.subtitle}>הכנס את מיקומך ונגיע עד אליך!</Text>
 			</View>
 			<View style={styles.actions}>
 				<CustomPressable pressableStyle={styles.pressable} text='סטטוס' textStyle={[styles.PressableText, { color: PRESSABLE_COLORS.pink }]} />
